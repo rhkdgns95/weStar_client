@@ -1,0 +1,34 @@
+# Install
+1. yarn create react-app /client --typescript
+2. yarn add react-router-dom @types/react-router-com
+3. yarn add styled-components @types/styled-components
+4. yarn add apollo-boost react-apollo
+5. yarn add apollo-react-hooks
+
+# Tip
+
+1. graphql()()을 통해서 react에서 render할때, 데이터를 props로 받아서 이용할 수 있다.
+: Type정하는 것은 아직 미숙함.
+2. clientState는 캐시에대한 데이터를 정의할 수 있다.
+3. clientState에 해당하는 쿼리작성시 함수명 뒤에 @client명칭을 부여하도록한다.
+4. Query Tip
+: gql 쿼리 요청시.
+gql`
+    query getMyProfile{
+        GetMyProfile {
+            ok
+            error
+        }
+    }
+`은 
+gql `
+    {
+        GetMyProfile {
+            ok
+            error
+        }
+    }
+`와 같이 query (){}은 {}로 생략가능하지만, 리턴값의 타입을 정해주기 위해서 첫번째와 같이사용한다.(그렇지 않으면 생략가능.)
+5. 로그인 유저 데이터를 관리하기위해 ProvideAuth를 만들어서 user관련된 Query문을 작성한다. 또한 useAuth를 통해서 user관련된 Query를 객체를 통해 가져올 수 있도록 한다.
+6. padding-bottom: 100%; (width: 100%; // height은 제거해야함, 텍스트요소의 height도 생각해서 제거하도록 해야함.)
+
