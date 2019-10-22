@@ -12,6 +12,8 @@ import SignUp from "../SignUp";
 import NavBar from "../../Components/NavBar";
 import UserProfile from "../UserProfile";
 import AppProvider from "./AppProvider";
+import SignUpProvider from "../SignUp/SignUpProvider";
+import AppProgressBar from "../../Components/AppProgressBar";
 
 const AppContainer = ({data: {auth: {isLoggedIn}}}) => (
     <ThemeProvider theme={theme}>
@@ -25,14 +27,19 @@ const AppPresenter: React.FC<{isLoggedIn: boolean}> = ({
     isLoggedIn
 }) => (
     <AppProvider>
-    {
-        isLoggedIn ? (
-            <ProvideAuth>
-                <NavBar/>
-                <UserLoggedIn/>
-            </ProvideAuth>
-        ) : <UserLoggedOut/>
-    }    
+        {
+            isLoggedIn ? (
+                <ProvideAuth>
+                    <NavBar/>
+                    <UserLoggedIn/>
+                </ProvideAuth>
+            ) : (
+                <SignUpProvider>
+                    <UserLoggedOut/>
+                </SignUpProvider>
+            )
+        } 
+        <AppProgressBar/>
     </AppProvider>
 )
 

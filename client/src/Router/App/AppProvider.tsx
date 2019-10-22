@@ -1,30 +1,25 @@
 import React, { useState, useReducer, useContext } from "react";
 import { toast } from "react-toastify";
 
-interface IState {
-    loading: boolean;
-    error: string | null;
-}
-interface IAction {
-    type: "OK" | "ERROR" | "RESET";
-    error: string | null;
-}
-interface IContextProps {
-    appState: IState,
-    onError: (errorMessage: string) => void;
-    onLoading: () => void;
-}
-const InitState: IState = {
+const InitState: IAppState = {
     loading: true,
     error: null
 };
-
+const InitAppContext: IAppContext = {
+    appState: {...InitState},
+    exeLoading: false,
+    onError: errorMessage => {}, 
+    onLoading: () => {},
+    onExeLoading: () => {},
+    onUpdateTitle: () => {}
+}
 const LOADDING_SECONDS: number = 3000;
+const EXE_LOADING_SECONDS: number = 2000;
 
-const AppContext: React.Context<IContextProps> = React.createContext<IContextProps>({appState: {...InitState}, onError: errorMessage => {}, onLoading: () => {}});
+const AppContext: React.Context<IAppContext> = React.createContext<IAppContext>(InitAppContext);
 const useAppContext = () => useContext(AppContext);
 
-const reducer: React.Reducer<IState, IAction> = (state, action) => {
+const reducer: React.Reducer<IAppState, IAppStateReducerAction> = (state, action) => {
     switch(action.type) {
         case "OK":
             return { ...state, loading: false, error: null };
@@ -39,7 +34,22 @@ const reducer: React.Reducer<IState, IAction> = (state, action) => {
 
 const useAppFetch = () => {
     const [appState, dispatchAppState] = useReducer(reducer, InitState);
-    
+    const [exeLoading, setExeLoading] = useState<boolean>(false);
+
+    const onExeLoading = () => {
+        if(exeLoading) {
+            toast.error("실행중입니다.");
+            return;
+        }
+        setExeLoading(true);
+        setTimeout(() => {
+            setExeLoading(false);
+        }, EXE_LOADING_SECONDS);
+    }
+    const onUpdateTitle = (title: string) => {
+        document.title = title;
+    }
+
     const onLoading = () => {
         if(appState.loading === false) {
             dispatchAppState({type: "RESET", error: null});
@@ -60,8 +70,11 @@ const useAppFetch = () => {
     return {
         value: {
             appState,
+            exeLoading,
             onError,
-            onLoading
+            onLoading,
+            onExeLoading,
+            onUpdateTitle
         }
     };
 }
@@ -70,6 +83,7 @@ const AppProvider = ({
     children
 }) => {
     const data = useAppFetch();
+    
     return (
         <AppContext.Provider {...data}>
             {
@@ -79,5 +93,5 @@ const AppProvider = ({
     )
 };
 
-export { useAppContext };
+export { LOADDING_SECONDS, EXE_LOADING_SECONDS, useAppContext };
 export default AppProvider;

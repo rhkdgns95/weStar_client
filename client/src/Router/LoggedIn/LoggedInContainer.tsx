@@ -5,7 +5,7 @@ import { useMutation } from "react-apollo";
 import { EMAIL_SIGN_IN, USER_LOGGED_IN } from "./LoggedInQueries";
 import { EmailSignInResponse, EmailSignInMutationVariables, UserLoggedInMutationVariables } from "../../types/resolvers";
 import { toast } from "react-toastify";
-import { useAppContext } from "../App/AppProvider";
+import { useAppContext, EXE_LOADING_SECONDS } from "../App/AppProvider";
 
 const UseEffects = () => {
     useEffect(() => {
@@ -18,26 +18,37 @@ const InitUser: IUser = {
 };
 
 const LoggedInContainer: React.FC<any> = () => {
-    const { appState: { loading, error }, onError, onLoading} = useAppContext();
-    UseEffects();
+    const { appState: { loading, error }, onError, onLoading, onExeLoading, exeLoading } = useAppContext();
+    useEffect(() => {
+        onLoading();
+    }, []);
     const [ mutationEmailSignIn, { data, loading: loadingEmailSignIn }] = useMutation<EmailSignInResponse, EmailSignInMutationVariables>(EMAIL_SIGN_IN, {
         onCompleted: data => {
             const { EmailSignIn } = data;
             console.log("ON COMPLETETED");
+            if(exeLoading) {
+                toast.warn("Wait...");
+                return;
+            }
+            onExeLoading();
+            
             if(!EmailSignIn.ok) {
-                // toast.error(EmailSignIn.error);
-                onError(EmailSignIn.error || "");
+                setTimeout(() => {
+                    onError(EmailSignIn.error || "");
+                }, EXE_LOADING_SECONDS);
             } else {
-                toast.success("OK");
-                const { token } = EmailSignIn;
-                console.log(token)
-                if(token) {
-                    mutationUserLoggedIn({
-                        variables: {
-                            token
-                        }
-                    })
-                }
+                setTimeout(() => {
+                    toast.success("OK");
+                    const { token } = EmailSignIn;
+                    console.log(token)
+                    if(token) {
+                        mutationUserLoggedIn({
+                            variables: {
+                                token
+                            }
+                        })
+                    }
+                }, EXE_LOADING_SECONDS);
             }
         },
         onError: data => {
@@ -81,6 +92,7 @@ const LoggedInContainer: React.FC<any> = () => {
             onInputChange={onInputChange}
             onSubmit={onSubmit}
             error={error}
+            loading={loading}
         />
     );
 }

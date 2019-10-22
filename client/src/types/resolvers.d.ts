@@ -80,3 +80,24 @@ export type GetMyProfileResponse = {
     GetMyProfile: GetMyProfile
 }
 // GetMyProfile_End
+
+// EmailSignUp_Start
+
+type EmailSignUp = {
+    ok: boolean;
+    error: string | null;
+    token: string | null;
+}
+interface EmailSignUpMutationVariables {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    nickName: string;
+}
+interface EmailSignUpMutationResponse {
+    EmailSignUp: EmailSignUp
+}
+
+// EmailSignUp_End

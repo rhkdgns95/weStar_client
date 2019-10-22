@@ -3,7 +3,9 @@ import { IUser } from "./LoggedInTypes";
 import styled from "../../Styles/typed-components";
 import FacebookLoginButton from "../../Components/FacebookLoginButton";
 import MainScreen from "../../Components/MainScreen";
-
+import Spinner from "../../Components/Spinner";
+import LoginBar from "../../Components/LoginBar";
+import FormTextInput from "../../Components/FormTextInput";
 
 const Container = styled.div`
     display: flex;
@@ -17,7 +19,6 @@ const Container = styled.div`
     }
 `;
 const MainContainer = styled.div`
-    
     @media(max-width: 450px) {
         width: 100%;
     }
@@ -29,19 +30,7 @@ const MainScreenExtended = styled(MainScreen)`
     }
 `;
 
-const LoginBar = styled.div`
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #dfdfdf;
-    padding: 30px 40px;
-    background-color: white;
-    @media(max-width: 450px) {
-        background-color: inherit;
-        border: none;
-    }
-`;
+
 const Title = styled.h5`
     margin-top: 0;
     text-align: center;
@@ -190,45 +179,60 @@ interface IProps {
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
     error: string | null;
+    loading: boolean;
 }
 const LoggedInPresenter: React.FC<IProps> = ({
     formData: { email, password },
     onInputChange,
     onSubmit,
-    error
+    error,
+    loading
 }) => {
     const isNullEmail: boolean = email === "";
     const isNullPassword: boolean =  password === "";
     const isOkLoginButton: boolean = !isNullEmail && !isNullPassword;
     return (
         <Container>
-            <MainScreenExtended className="main-screen"/>
-            <MainContainer className={error ? "error" : "working"}>
-                <LoginBar>
-                    <Title className="font-app-title">WeStargram</Title>
-                    <Form onSubmit={onSubmit}>
-                        <FormInputWrapper>
-                            <FormInput className={isNullEmail ? "" : "active"} type="text" name="email" id="form_email" value={email} onChange={onInputChange} autoComplete={"off"}/>
-                            <FormLabel htmlFor="form_email">전화번호 사용자 이름 또는 이메일</FormLabel>
-                        </FormInputWrapper>
-                        <FormInputWrapper>
-                            <FormInput className={isNullPassword ? "" : "active"} type="password" name="password" id="form_password" value={password} onChange={onInputChange}/>
-                            <FormLabel htmlFor="form_password">비밀번호</FormLabel>
-                        </FormInputWrapper>
-                        {/* <input type="submit" value={"전송하기"}/> */}
-                        <FormLoginButton className={isOkLoginButton ? "active" : ""} disabled={!isOkLoginButton} type={"submit"}>로그인</FormLoginButton>
-                    </Form>
-                    <Line>또는</Line>
-                    <FacebookLoginButton/>
-                    <FindPasswordButton href="/find-password">비밀번호를 잊으셨나요?</FindPasswordButton>
-                </LoginBar>
-                <SignBar>
-                    <SignText>
-                        계정이 없으신가요?
-                        <SignLink href="/sign-up">가입하기</SignLink>
-                    </SignText>
-                </SignBar>
-            </MainContainer>
+            {
+                loading ? (<Spinner />) :
+                <React.Fragment>
+                    <MainScreenExtended className="main-screen"/>
+                    <MainContainer className={error ? "error" : "working"}>
+                        <LoginBar>
+                            <Title className="font-app-title">WeStargram</Title>
+                            <Form onSubmit={onSubmit}>
+                                <FormTextInput 
+                                    isNullEmail={isNullEmail}
+                                    labelText={"전화번호 사용자 이름 또는 이메일"}
+                                    name={"email"}
+                                    value={email} 
+                                    onChange={onInputChange}
+                                />
+                                <FormTextInput 
+                                    isNullEmail={isNullPassword}
+                                    labelText={"비밀번호"}
+                                    type={"password"}
+                                    name={"password"}
+                                    value={password} 
+                                    onChange={onInputChange}
+                                />
+                                {/* <input type="submit" value={"전송하기"}/> */}
+                                <FormLoginButton className={isOkLoginButton ? "active" : ""} disabled={!isOkLoginButton} type={"submit"}>로그인</FormLoginButton>
+                            </Form>
+                            <Line>또는</Line>
+                            <FacebookLoginButton/>
+                            <FindPasswordButton href="/find-password">비밀번호를 잊으셨나요?</FindPasswordButton>
+                        </LoginBar>
+                        <SignBar>
+                            <SignText>
+                                계정이 없으신가요?
+                                <SignLink href="/sign-up">가입하기</SignLink>
+                            </SignText>
+                        </SignBar>
+                    </MainContainer>
+                </React.Fragment>
+            }
+            
         </Container>
     )
 };

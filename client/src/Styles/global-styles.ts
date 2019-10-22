@@ -11,6 +11,9 @@ export const GlobalStyles = createGlobalStyle`
         height: 100%;
         background-color: #fafafa;
     }
+    * {
+        box-sizing: border-box;
+    }
     ul, li, p{
         padding: 0;
         margin: 0;
