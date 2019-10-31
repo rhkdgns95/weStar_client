@@ -4,6 +4,15 @@ type User = {
     email: string;
     fullName: string;
     nickName: string;
+    followers: Array<string> | null
+    following: Array<string> | null
+}
+type Board = {
+    id: number;
+    text: string;
+    files: {
+        url: string;
+    }
 }
 
 // Local______
@@ -37,6 +46,7 @@ type GetUserProfile = {
     ok: boolean;
     error: string | null;
     user: User | undefined;
+    boards: Array<Board> | undefined;
 }
 export type GetUserProfileResponse = {
     GetUserProfile: GetUserProfile;
@@ -101,3 +111,49 @@ interface EmailSignUpMutationResponse {
 }
 
 // EmailSignUp_End
+
+// CreateBoard_Start
+type BoardAllow = "ALL" | "ONLY_MINE" | "ONLY_FOLLOWED";
+interface CreateBoard {
+    ok: boolean;
+    error: string | null;
+    boardId: number | null;
+}
+interface CreateBoardMutationVariables {
+    text: string | null;
+    allow: BoardAllow!
+    images: [string!]!
+}
+interface CreateBoardMutationResponse {
+    CreateBoard: CreateBoard!;
+}
+// CreateBoard_End
+
+// GetBoardDetails_Start
+type GetBoardDetailsResponseData = {
+    ok: boolean,
+    error: string | null,
+    board: {
+        id: number,
+        text: string,
+        allow: "ALL" | "ONLY_MINE" | "ONLY_FOLLOWED",
+        files: [{
+            url: string
+        }]
+        writer: {
+            nickName: string
+        },
+        comments: [{
+            id: number,
+            text: string  
+        }],
+        updatedAt: string
+    }
+}
+interface GetBoardDetailsQueryVariables {
+    boardId: number;
+}
+interface GetBoardDetailsResponse {
+    GetBoardDetails: GetBoardDetailsResponseData;
+}
+// GetBoardDetails_End

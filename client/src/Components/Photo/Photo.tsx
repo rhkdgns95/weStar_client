@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "../../Styles/typed-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
     position: relative;
@@ -10,11 +11,18 @@ const Container = styled.div`
         padding-bottom: 100%;
     }
 `;
-const PhotoImg = styled.img`
+interface IPhotoImg {
+    imgPath: string
+};
+const PhotoImg = styled.div<IPhotoImg>`
     position: absolute;
     display: block;
     width: 100%;
     height: 100%;
+    background: url('${props => props.imgPath}');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 `;
 const ImgSettings = styled.div`
     position: absolute;
@@ -101,19 +109,30 @@ interface IProps {
     isMargin?: boolean;
     className?: string;
     isMany?: boolean;
+    favoritesCnt: number;
+    commentsCnt: number;
+    nickName: string;
+    boardId: null | number;
+    handleModalClick: (data: null | number) => {};
 }
 
 const Photo: React.FC<IProps> = ({
     imgPath,
     isMargin,
     className,
-    isMany
+    isMany,
+    favoritesCnt,
+    commentsCnt,
+    nickName,
+    boardId,
+    handleModalClick
 }) => {
     return (
-        <Container className={className}>
+        <Container className={className} onClick={e => handleModalClick(boardId)}>
+            <Link to={`/${nickName}/board/${boardId}`}>
             {
                 imgPath ? (
-                    <PhotoImg src={imgPath}/>
+                    <PhotoImg imgPath={imgPath}/>
                 ) : (
                     <NoPhoto>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z"/></svg>
@@ -129,14 +148,16 @@ const Photo: React.FC<IProps> = ({
                     <Icon>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z"/></svg>
                     </Icon>
-                    <Data>3</Data>
+                    <Data>{ favoritesCnt }</Data>
                     <Icon>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 1c-6.627 0-12 4.364-12 9.749 0 3.131 1.817 5.917 4.64 7.7.868 2.167-1.083 4.008-3.142 4.503 2.271.195 6.311-.121 9.374-2.498 7.095.538 13.128-3.997 13.128-9.705 0-5.385-5.373-9.749-12-9.749z"/></svg>
                     </Icon>
-                    <Data>3</Data>
+                    <Data>{ commentsCnt }</Data>
                 </SettingsWrapper>  
             </ImgSettings>  
+            </Link>
         </Container>
+        
     );
 };
 

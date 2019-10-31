@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { User } from "../../types/resolvers";
 
 const Container = styled.div`
+    position: relative;
+    z-index: 9;
     display: flex;
     padding: 15px 10px;
     box-sizing: border-box;
@@ -17,7 +19,7 @@ const LeftMenu = styled.div`
     justify-self: start;
     align-items: center;
     svg {
-        padding-right: 15px;
+        margin-right: 15px;
     }
     padding: 10px;
 `;

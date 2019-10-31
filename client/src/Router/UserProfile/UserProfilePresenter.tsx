@@ -4,9 +4,12 @@ import styled from "../../Styles/typed-components";
 import { Link } from "react-router-dom";
 import Photo from "../../Components/Photo";
 import BottomWave from "../../Components/BottomWave";
+import ModalSettings from "../../Components/Modal/ModalSettings";
+import ModalBoardDetails from "../../Components/ModalBoardDetails";
+import { GetBoardDetailsResponse } from "../../types/resolvers";
 
 const Container = styled.div`
-    
+    position: relative;
 `;
 
 const Wrapper = styled.div`
@@ -131,30 +134,55 @@ const BottomWaveExtended = styled(BottomWave)`
     transform: translateY(-100%);
     opacity: .3;
 `;
+const ModalExtended = styled(ModalSettings)`
+
+`;
 interface IProps {
     isSelf: boolean;
+    clickedEditMyProfile: boolean;
     profilePhoto: string;
     nickName: string;
     fullName: string;
     selector: string;
     boards: Array<any>;
+    boardDetailsData: GetBoardDetailsResponse | undefined,
+    boardDetailsLoading: boolean,
+    followerCnt: number;
+    followingCnt: number;
+    clickedBoardDetails: number | null;
+    onClickEditMyProfile: (data: boolean) => any;
+    onClickBoard: (boardId: number | null) => any;
 }
 const UserProfilePresenter: React.FC<IProps> = ({
     isSelf,
+    clickedEditMyProfile,
+    clickedBoardDetails,
     profilePhoto,
     nickName,
     fullName,
     selector,
-    boards
+    boards,
+    boardDetailsData,
+    boardDetailsLoading,
+    followerCnt,
+    followingCnt,
+    onClickEditMyProfile,
+    onClickBoard,
+    
 }) => (
     <Container>
         <Wrapper>
             <Header>
                 <Profile 
+                    clickedEditMyProfile={clickedEditMyProfile}
                     profilePhoto={profilePhoto}
                     nickName={nickName}
                     name={fullName}
                     isSelf={isSelf}
+                    followerCnt={followerCnt}
+                    followingCnt={followingCnt}
+                    boardCnt={boards ? boards.length : 0}
+                    onClickEditMyProfile={onClickEditMyProfile}
                 />
             </Header>
             <Selector>
@@ -175,15 +203,15 @@ const UserProfilePresenter: React.FC<IProps> = ({
             <Content>
                 <PhotoContainer className={selector === "board" ? "active" : ""}>
                     {
-                        boards.map(board => <PhotoExtended isMany={board.board.files.length > 0} key={board.board.id} imgPath={board.board.files[0] ? board.board.files[0].url : undefined}/>)
+                        boards  && boards.map(board => <PhotoExtended isMany={board.files.length > 1} favoritesCnt={board.favoriteMembers.length} commentsCnt={board.comments.length} key={board.id} imgPath={board.files[0] ? board.files[0].url : undefined} boardId={board.id} nickName={nickName} handleModalClick={onClickBoard}/>)
                     }
                 </PhotoContainer>
-                    
-                {
-                    selector
-                }
             </Content>
         </Wrapper>
+        <ModalExtended className={clickedEditMyProfile ? "active" : ""} handleModalClick={onClickEditMyProfile} />
+        {
+            selector === "board" && clickedBoardDetails && <ModalBoardDetails boards={boards} toggleModal={onClickBoard} nickName={nickName} boardDetailsData={boardDetailsData} boardDetailsLoading={boardDetailsLoading}/>
+        }
     </Container>
 );
 

@@ -14,6 +14,7 @@ import UserProfile from "../UserProfile";
 import AppProvider from "./AppProvider";
 import SignUpProvider from "../SignUp/SignUpProvider";
 import AppProgressBar from "../../Components/AppProgressBar";
+import CreateBoard from "../CreateBoard";
 
 const AppContainer = ({data: {auth: {isLoggedIn}}}) => (
     <ThemeProvider theme={theme}>
@@ -48,7 +49,9 @@ const UserLoggedIn: React.FC<any> = () => {
     return (
         <Switch>
             <Route path={"/"} exact={true} component={Home}/>
+            <Route path={"/create_board"} component={CreateBoard}/>
             <Route path={"/:nickName/tagged"} exact={true} component={UserProfile}/>
+            <Route path={"/:nickName/board/:boardId"} exact={true} component={UserProfile}/>
             <Route path={"/:nickName"} exact={true} component={UserProfile}/>
             <Redirect from={"*"} to={"/"}/>
         </Switch>

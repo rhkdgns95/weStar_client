@@ -10,26 +10,44 @@ export const GET_USER_PROFILE = gql`
                 email
                 id
                 nickName
+                followers {
+                    id
+                }
+                following {
+                    id
+                }
+            }
+            boards {
+                id
+                text
+                favoriteMembers {
+                    id
+                }
+                comments {
+                    id
+                    text
+                }
+                files {
+                    url
+                }
             }
         }
     }
 `;
-export const GET_USER_BOARDS = gql`
-    query getUserPublicBoards($userId: Int!) {
-        GetUserPublicBoards(userId: $userId) {
+export const GET_BOARD_DETAILS = gql`
+    query getBoardDetails($boardId: Int!) {
+        GetBoardDetails(boardId: $boardId) {
             ok
             error
-            boards {
-                board {
+            board {
+                id
+                text
+                files {
+                    url
+                }
+                comments {
                     id
                     text
-                    allow
-                    files {
-                        url
-                    }
-                    writer {
-                        fullName
-                    }
                 }
             }
         }

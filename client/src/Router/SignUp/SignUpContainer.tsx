@@ -26,6 +26,7 @@ const SignUpContainer = () => {
         }
         onExeLoading();
         setTimeout(() => {
+            
             console.log("시작됨.");
             console.log({...signUpFormState});
             const { email, password, phoneNumber, firstName, lastName, nickName} = signUpFormState;
